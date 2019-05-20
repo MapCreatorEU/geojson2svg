@@ -1,9 +1,13 @@
 //converter.js
 var multi = require('multigeojson');
 
-function getCoordString (coords, res, origin) {
+function getCoordString (coords, res, origin, opt) {
   //origin - svg image origin
   var coordStr = coords.map(function (coord) {
+    if (opt.project) {
+      coord = opt.project(coord);
+    }
+
     return (coord[0] - origin.x) / res + ',' + (origin.y - coord[1]) / res;
   });
 
@@ -25,7 +29,7 @@ function addAttributes (ele, attributes) {
 function point (geom, res, origin, opt) {
   var r = opt && opt.r ? opt.r : 1;
   var pointAsCircle = opt && opt.hasOwnProperty('pointAsCircle') ? opt.pointAsCircle : false;
-  var coords = getCoordString([geom.coordinates], res, origin);
+  var coords = getCoordString([geom.coordinates], res, origin, opt);
 
   if (pointAsCircle) {
     return [coords];
@@ -50,7 +54,7 @@ function multiPoint (geom, res, origin, opt) {
 }
 
 function lineString (geom, res, origin, opt) {
-  var coords = getCoordString(geom.coordinates, res, origin);
+  var coords = getCoordString(geom.coordinates, res, origin, opt);
   var path = 'M' + coords;
 
   return [path];
@@ -70,7 +74,7 @@ function multiLineString (geom, res, origin, opt) {
 function polygon (geom, res, origin, opt) {
   var mainStr, holes, holeStr;
 
-  mainStr = getCoordString(geom.coordinates[0], res, origin);
+  mainStr = getCoordString(geom.coordinates[0], res, origin, opt);
 
   if (geom.coordinates.length > 1) {
     holes = geom.coordinates.slice(1, geom.coordinates.length);
@@ -80,7 +84,7 @@ function polygon (geom, res, origin, opt) {
 
   if (holes) {
     for (var i = 0; i < holes.length; i++) {
-      path += ' M' + getCoordString(holes[i], res, origin);
+      path += ' M' + getCoordString(holes[i], res, origin, opt);
     }
   }
 

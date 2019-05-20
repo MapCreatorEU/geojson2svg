@@ -25,7 +25,7 @@ g2svg.prototype.calResolution = function (extent, size, fitTo) {
     } else if (fitTo.toLowerCase() === 'height') {
       return yres;
     } else {
-      throw new Error('"fitTo" option should be "width" or "height" ');
+      throw new Error('"fitTo" option should be "width" or "height"');
     }
   } else {
     return Math.max(xres, yres);
