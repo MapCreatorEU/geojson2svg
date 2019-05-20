@@ -8,7 +8,10 @@ function getCoordString (coords, res, origin, opt) {
       coord = opt.project(coord);
     }
 
-    return (coord[0] - origin.x) / res + ',' + (origin.y - coord[1]) / res;
+    var x = (coord[0] - origin.x) / res;
+    var y = (opt.yDirection || 1) * (origin.y - coord[1]) / res;
+
+    return x + ',' + y;
   });
 
   return coordStr.join(' ');
